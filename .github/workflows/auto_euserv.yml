@@ -1,24 +1,5 @@
-name: Auto EUserv
-on:
-  schedule:
-    - cron: '0 12 * * SUN'
-  workflow_dispatch:
-jobs:
-  run-script:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@main
-    - name: Set up Python
-      uses: actions/setup-python@main
-      with:
-        python-version: '3.x'
-    - name: Install dependencies
-      run: |
-        pip install requests beautifulsoup4
-    - name: Run script
+- name: Run script
       env:
-        # 这里必须和你 Secrets 里的名字完全一致
         EU_USERNAME: ${{ secrets.EU_USERNAME }}
         EU_PASSWORD: ${{ secrets.EU_PASSWORD }}
         EU_2FA_SECRET: ${{ secrets.EU_2FA_SECRET }}
