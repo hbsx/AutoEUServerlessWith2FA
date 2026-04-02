@@ -1,8 +1,36 @@
-- name: Run script
-      env:
-        EU_USERNAME: ${{ secrets.EU_USERNAME }}
-        EU_PASSWORD: ${{ secrets.EU_PASSWORD }}
-        EU_2FA_SECRET: ${{ secrets.EU_2FA_SECRET }}
-        GMAIL_USER: ${{ secrets.GMAIL_USER }}
-        GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
-      run: python Github_Action.py
+name: Auto EUserv
+
+on:
+  schedule:
+    # 每天国际标准时间 12:00 (北京时间 20:00) 自动运行
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+    # 允许你在 Actions 页面手动点击 "Run workflow" 触发
+
+jobs:
+  run-renewal:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install requests beautifulsoup4
+
+      - name: Run Renewal Script
+        env:
+          # --- 核心：将 Secrets 映射为脚本可见的环境变量 ---
+          # 这里的左侧名字必须和 Github_Action.py 里的 os.getenv 一致
+          # 这里的右侧名字必须和你 GitHub Settings -> Secrets 里的名字完全一致
+          EU_USERNAME: ${{ secrets.EU_USERNAME }}
+          EU_PASSWORD: ${{ secrets.EU_PASSWORD }}
+          EU_2FA_SECRET: ${{ secrets.EU_2FA_SECRET }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
+        run: python Github_Action.py
